@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Snake.Controller">
+   <children>
+      <Label alignment="CENTER" text="Snake">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+         <font>
+            <Font size="96.0" />
+         </font>
+      </Label>
+      <Button fx:id="buttonSinglePlayer" mnemonicParsing="false" onAction="#actionSinglePlayer" prefWidth="100.0" text="Single Player">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </Button>
+      <Button fx:id="buttonTwoPlayer" mnemonicParsing="false" onAction="#actionTwoPlayer" prefWidth="100.0" text="Two Player">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </Button>
+      <Button fx:id="buttonInstructions" mnemonicParsing="false" onAction="#actionInstructions" prefWidth="100.0" text="Instructions">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </Button>
+      <Button fx:id="buttonExit" mnemonicParsing="false" onAction="#actionExit" prefWidth="100.0" text="Exit">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </Button>
+      <Label text="FateMetric 2016" />
+   </children>
+</VBox>
