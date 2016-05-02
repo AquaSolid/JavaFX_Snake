@@ -2,6 +2,7 @@ package Snake;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,7 +49,7 @@ public class Snake {
 
     // Additions
     private int points;
-    private int secondsPassed = 0;
+    private GameTimer gameTimer = new GameTimer();
     private Label labelPoints = new Label();
     private Label labelTime = new Label();
 
@@ -64,7 +65,12 @@ public class Snake {
         food.setTranslateX((int) (Math.random() * (APP_W - BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
         food.setTranslateY((int) (Math.random() * (APP_H - BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
 
-        startTimer();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                labelTime.setText("Time: "+gameTimer.getTime());
+            }
+        });
 
         KeyFrame frame = new KeyFrame(Duration.seconds(0.2), event -> {
             if (!running){
@@ -128,9 +134,10 @@ public class Snake {
                 points++;
                 labelPoints.setText("Points: "+points);
 
+
                 snake.add(rect);
             }
-
+            labelTime.setText("Time: "+gameTimer.getTime());
         });
 
         timeline.getKeyFrames().add(frame);
@@ -195,21 +202,12 @@ public class Snake {
     }
 
     private void stopGame(){
+        gameTimer.stopTimer();
+
         running = false;
         timeline.stop();
         snake.clear();
     }
-
-    private Timer timer = new Timer();
-    /*
-    private TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            secondsPassed++;
-            System.out.println(secondsPassed);
-            labelTime.setText("Time: "+secondsPassed);
-        }
-    };*/
 
     private void startGame(){
         direction = Direction.RIGHT;
@@ -218,14 +216,11 @@ public class Snake {
         timeline.play();
 
         points = 0;
-        secondsPassed = 0;
+        gameTimer.startTimer();
 
         labelPoints.setStyle("-fx-font-size: 18 ;");
         labelTime.setStyle("-fx-font-size: 18 ;");
         labelPoints.setText("Points: "+points);
-        labelTime.setText("Time: "+secondsPassed);
-
-        //timer.scheduleAtFixedRate(timerTask, 1000, 1000);
 
         running = true;
     }
@@ -235,6 +230,8 @@ public class Snake {
 
         scene.setOnKeyPressed(event -> {
             if (!moved) { return; }
+
+
 
             switch (event.getCode()){
                 case W:
@@ -268,11 +265,10 @@ public class Snake {
         System.out.print("Started Game. ");
     }
 
-    private void startTimer(){
-
-    }
-
     public void actionBackToMenu(javafx.event.ActionEvent event) throws Exception {
+        stopGame();
+        gameTimer.stopTimer();
+
         Stage stage = (Stage) buttonBackToMenu.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setController(Controller.class);
