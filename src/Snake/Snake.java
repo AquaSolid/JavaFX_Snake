@@ -65,13 +65,6 @@ public class Snake {
         food.setTranslateX((int) (Math.random() * (APP_W - BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
         food.setTranslateY((int) (Math.random() * (APP_H - BLOCK_SIZE)) / BLOCK_SIZE * BLOCK_SIZE);
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                labelTime.setText("Time: "+gameTimer.getTime());
-            }
-        });
-
         KeyFrame frame = new KeyFrame(Duration.seconds(0.2), event -> {
             if (!running){
                 return;
@@ -153,23 +146,23 @@ public class Snake {
         Button buttonTwoPlayers = new Button("Two Player");
 
         buttonBack.setOnAction(event -> {
-            Stage stage = (Stage) buttonBack.getScene().getWindow();
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setController(Controller.class);
-            Parent menu = null;
-            try {
-                menu = FXMLLoader.load(getClass().getResource("../Snake/Menu.fxml"));
-            } catch (IOException e) {
-                e.printStackTrace();
+            try{
+                actionBackToMenu(event);
             }
-            stage.setTitle("Snake");
-            stage.setScene(new Scene(menu, 600, 400));
-            System.out.print("Back To Menu From Instructions ");
+            catch(Exception e) {e.printStackTrace();}
         });
 
         buttonBack.setStyle("-fx-pref-width: 100;");
         buttonScore.setStyle("-fx-pref-width: 100;");
         buttonTwoPlayers.setStyle("-fx-pref-width: 100;");
+
+        hboxTop.setAlignment(Pos.TOP_CENTER);
+        hboxTop.setStyle(
+                "-fx-spacing: 30;" +
+                        "-fx-border-width: 0 0 1 0;" +
+                        "-fx-padding: 0;" +
+                        "-fx-background-color: white;");
+        hboxTop.getChildren().addAll(labelPoints, labelTime);
 
         hboxBottom.setAlignment(Pos.CENTER);
         hboxBottom.setStyle(
@@ -179,16 +172,6 @@ public class Snake {
                 "-fx-background-color: white;");
         hboxBottom.getChildren().addAll(buttonBack, buttonScore, buttonTwoPlayers);
 
-
-
-        hboxTop.setAlignment(Pos.BOTTOM_LEFT);
-        hboxTop.setStyle(
-                "-fx-spacing: 30;" +
-                "-fx-border-width: 0 0 1 0;" +
-                "-fx-padding: 10;" +
-                "-fx-background-color: white;");
-        hboxTop.getChildren().addAll(labelPoints, labelTime);
-
         root.setStyle("-fx-background-color: GainsBoro;");
 
         VBox vBox = new VBox();
@@ -197,19 +180,23 @@ public class Snake {
     }
 
     private void restartGame(){
+        System.out.println("Game restart.");
         stopGame();
         startGame();
     }
 
     private void stopGame(){
+        System.out.println("Game stops.");
         gameTimer.stopTimer();
 
         running = false;
         timeline.stop();
         snake.clear();
+        System.out.println("Game over.");
     }
 
     private void startGame(){
+        System.out.println("Game starts.");
         direction = Direction.RIGHT;
         javafx.scene.shape.Rectangle head = new javafx.scene.shape.Rectangle(BLOCK_SIZE, BLOCK_SIZE);
         snake.add(head);
@@ -223,6 +210,7 @@ public class Snake {
         labelPoints.setText("Points: "+points);
 
         running = true;
+        System.out.println("Game is running.");
     }
 
     public void startSnake(Stage primaryStage) throws Exception {
@@ -230,8 +218,6 @@ public class Snake {
 
         scene.setOnKeyPressed(event -> {
             if (!moved) { return; }
-
-
 
             switch (event.getCode()){
                 case W:
@@ -255,7 +241,6 @@ public class Snake {
                     }
                     break;
             }
-
             moved = false;
         });
 
@@ -266,16 +251,20 @@ public class Snake {
     }
 
     public void actionBackToMenu(javafx.event.ActionEvent event) throws Exception {
+        System.out.println("Exit from Snake.");
         stopGame();
         gameTimer.stopTimer();
+        System.out.println("Snake exits.");
+        Node target = (Node)event.getTarget();
+        Stage stage = (Stage) target.getScene().getWindow();
 
-        Stage stage = (Stage) buttonBackToMenu.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setController(Controller.class);
         Parent root = fxmlLoader.load(getClass().getResource("../Snake/Menu.fxml"));
         stage.setTitle("Snake");
         stage.setScene(new Scene(root, 600, 400));
         System.out.print("Back To Menu From Game ");
+        
     }
 
 }

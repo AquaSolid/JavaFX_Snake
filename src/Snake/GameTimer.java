@@ -1,7 +1,5 @@
 package Snake;
 
-import com.sun.javafx.binding.StringFormatter;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,11 +11,11 @@ public class GameTimer {
     private int seconds;
     private Timer timer;
     private TimerTask timerTask;
-    private boolean isActive;
+    private volatile boolean isActive;
 
     public GameTimer () {
-        minutes = 0;
-        seconds = 0;
+        this.minutes = 0;
+        this.seconds = 0;
     }
 
     public GameTimer(int minutes, int seconds){
@@ -30,6 +28,9 @@ public class GameTimer {
             this.seconds = seconds;
         }
     }
+    
+    void secondsInc()
+    { this.seconds++; }
 
     public String getTime () {
         if (seconds > 60){
@@ -41,23 +42,27 @@ public class GameTimer {
     }
 
     public void startTimer () {
+        this.seconds = 0;
         timer = new Timer();
         timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                seconds++;
-                System.out.print(getTime());
-            }
-        };
-
+           @Override
+           public void run() {
+               secondsInc();
+               System.out.print(getTime());
+           }
+        };        
         timer.scheduleAtFixedRate(timerTask, 0, 1000);
         isActive = true;
     }
 
     public void stopTimer() {
-        timerTask.cancel();
+        System.out.println("Stopping timer.");
+        timerTask.cancel();      
+        System.out.println("timerTask.cancel()");
         timer.cancel();
+        System.out.println("timer.cancel()");
         timer.purge();
+        System.out.println("timer.purge()");
 
         isActive = false;
     }
