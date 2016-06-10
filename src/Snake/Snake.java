@@ -2,7 +2,6 @@ package Snake;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,11 +17,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.IOException;
-import java.util.EventListener;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by filip on 23.04.2016.
@@ -53,7 +47,7 @@ public class Snake {
     private Label labelPoints = new Label();
     private Label labelTime = new Label();
 
-    private Pane createContent(){
+    public VBox createContent(){
         Pane root = new Pane();
         root.setPrefSize(APP_W, APP_H);
 
@@ -127,19 +121,38 @@ public class Snake {
                 points++;
                 labelPoints.setText("Points: "+points);
 
-
                 snake.add(rect);
             }
+
             labelTime.setText("Time: "+gameTimer.getTime());
         });
 
         timeline.getKeyFrames().add(frame);
         timeline.setCycleCount(Timeline.INDEFINITE);
 
-        HBox hboxTop = new HBox();
         HBox hboxBottom = new HBox();
         root.getChildren().addAll(food, snakeBody);
 
+        HBox hboxTop = new HBox();
+        hboxTop.setAlignment(Pos.TOP_LEFT);
+        hboxTop.setStyle(
+                "-fx-spacing: 30;" +
+                "-fx-border-width: 0 0 1 0;" +
+                "-fx-padding: 10;" +
+                "-fx-background-color: white;");
+        hboxTop.getChildren().addAll(labelPoints, labelTime);
+
+        improveHBoxBottom(hboxBottom);
+
+        root.setStyle("-fx-background-color: GainsBoro;");
+
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.getChildren().addAll(hboxTop, root, hboxBottom);
+        return  vBox;
+    }
+
+    public void improveHBoxBottom(HBox hboxBottom){
         // Bottom Buttons
         Button buttonBack  = new Button("← Back");
         Button buttonScore = new Button("Score Board");
@@ -156,27 +169,13 @@ public class Snake {
         buttonScore.setStyle("-fx-pref-width: 100;");
         buttonTwoPlayers.setStyle("-fx-pref-width: 100;");
 
-        hboxTop.setAlignment(Pos.TOP_CENTER);
-        hboxTop.setStyle(
-                "-fx-spacing: 30;" +
-                        "-fx-border-width: 0 0 1 0;" +
-                        "-fx-padding: 0;" +
-                        "-fx-background-color: white;");
-        hboxTop.getChildren().addAll(labelPoints, labelTime);
-
         hboxBottom.setAlignment(Pos.CENTER);
         hboxBottom.setStyle(
                 "-fx-spacing: 30;" +
-                "-fx-border-width: 1 0 0 0;" +
-                "-fx-padding: 10;" +
-                "-fx-background-color: white;");
-        hboxBottom.getChildren().addAll(buttonBack, buttonScore, buttonTwoPlayers);
-
-        root.setStyle("-fx-background-color: GainsBoro;");
-
-        VBox vBox = new VBox();
-        vBox.getChildren().addAll(hboxTop, root, hboxBottom);
-        return  vBox;
+                        "-fx-border-width: 1 0 0 0;" +
+                        "-fx-padding: 10;" +
+                        "-fx-background-color: white;");
+        hboxBottom.getChildren().addAll(buttonBack);
     }
 
     private void restartGame(){
@@ -252,8 +251,10 @@ public class Snake {
 
     public void actionBackToMenu(javafx.event.ActionEvent event) throws Exception {
         System.out.println("Exit from Snake.");
-        stopGame();
-        gameTimer.stopTimer();
+        if (running){
+            stopGame();
+            gameTimer.stopTimer();
+        }
         System.out.println("Snake exits.");
         Node target = (Node)event.getTarget();
         Stage stage = (Stage) target.getScene().getWindow();

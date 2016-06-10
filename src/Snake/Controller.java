@@ -19,6 +19,7 @@ public class Controller{
     @FXML private Button buttonBackToMenu;
 
     private volatile Snake snake;
+    private volatile TwoPlayer twoPlayer;
     
     public void actionSinglePlayer(ActionEvent event) throws Exception {
         snake = new Snake();
@@ -27,12 +28,14 @@ public class Controller{
     }
 
     public void actionTwoPlayer(ActionEvent event) throws Exception {
-        Stage stage = (Stage) buttonTwoPlayer.getScene().getWindow();
+        twoPlayer = new TwoPlayer();
+        twoPlayer.start((Stage) buttonTwoPlayer.getScene().getWindow());
+        /*Stage stage = (Stage) buttonTwoPlayer.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setController(Snake.class);
         Parent root = fxmlLoader.load(getClass().getResource("../Snake/Snake.fxml"));
         stage.setTitle("Snake");
-        stage.setScene(new Scene(root, 600, 400));
+        stage.setScene(new Scene(root, 600, 400));*/
         System.out.print("Two Player ");
     }
 
@@ -53,10 +56,6 @@ public class Controller{
     }
 
     public void actionBackToMenu(ActionEvent event) throws Exception {
-        //System.out.println("Back button pressed.");
-        //snake.actionBackToMenu(event);
-        //System.out.println("snake.actionBackToMenu(event)");
-        
         Stage stage = (Stage) buttonBackToMenu.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setController(Controller.class);
